@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaomi.bms.mapper.WarnRuleMapper">
+    <resultMap id="BaseResultMap" type="com.xiaomi.bms.entity.WarnRule">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="rule_id" jdbcType="VARCHAR" property="ruleId"/>
+        <result column="battery_id" jdbcType="VARCHAR" property="batteryId"/>
+        <result column="lower_limit" jdbcType="DECIMAL" property="lowerLimit"/>
+        <result column="upper_limit" jdbcType="DECIMAL" property="upperLimit"/>
+        <result column="warn_level" jdbcType="INTEGER" property="warnLevel"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , created_time, updated_time, rule_id, battery_id, lower_limit, upper_limit, warn_level,
+    is_deleted
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from warn_rule
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from warn_rule
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xiaomi.bms.entity.WarnRule"
+            useGeneratedKeys="true">
+        insert into warn_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+            <if test="ruleId != null">
+                rule_id,
+            </if>
+            <if test="batteryId != null">
+                battery_id,
+            </if>
+            <if test="lowerLimit != null">
+                lower_limit,
+            </if>
+            <if test="upperLimit != null">
+                upper_limit,
+            </if>
+            <if test="warnLevel != null">
+                warn_level,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ruleId != null">
+                #{ruleId,jdbcType=VARCHAR},
+            </if>
+            <if test="batteryId != null">
+                #{batteryId,jdbcType=VARCHAR},
+            </if>
+            <if test="lowerLimit != null">
+                #{lowerLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="upperLimit != null">
+                #{upperLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="warnLevel != null">
+                #{warnLevel,jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xiaomi.bms.entity.WarnRule">
+        update warn_rule
+        <set>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ruleId != null">
+                rule_id = #{ruleId,jdbcType=VARCHAR},
+            </if>
+            <if test="batteryId != null">
+                battery_id = #{batteryId,jdbcType=VARCHAR},
+            </if>
+            <if test="lowerLimit != null">
+                lower_limit = #{lowerLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="upperLimit != null">
+                upper_limit = #{upperLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="warnLevel != null">
+                warn_level = #{warnLevel,jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xiaomi.bms.entity.WarnRule">
+        update warn_rule
+        set created_time = #{createdTime,jdbcType=TIMESTAMP},
+            updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            rule_id      = #{ruleId,jdbcType=VARCHAR},
+            battery_id   = #{batteryId,jdbcType=VARCHAR},
+            lower_limit  = #{lowerLimit,jdbcType=DECIMAL},
+            upper_limit  = #{upperLimit,jdbcType=DECIMAL},
+            warn_level   = #{warnLevel,jdbcType=INTEGER},
+            is_deleted   = #{isDeleted,jdbcType=TINYINT}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="selectAllWarnRuleByBatteryIds" resultType="com.xiaomi.bms.entity.WarnRule">
+        SELECT id, rule_id, battery_id, lower_limit, upper_limit, warn_level, rule_name
+        FROM warn_rule
+        WHERE battery_id IN
+        <foreach collection="batteryIdsToGetFromDb" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        AND is_deleted = 0
+    </select>
+
+    <delete id="deleteWarnRuleByIds">
+        update warn_rule set is_deleted =1
+        where id in
+        <foreach collection="warnRuleList" item="item" index="index" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </delete>
+    <update id="updateBatchById" parameterType="com.xiaomi.bms.entity.WarnRule">
+        UPDATE warn_rule
+        set rule_id     = #{warnRule.ruleId},
+            battery_id  = #{warnRule.batteryId},
+            lower_limit = #{warnRule.lowerLimit},
+            upper_limit = #{warnRule.upperLimit},
+            warn_level  = #{warnRule.warnLevel},
+            rule_name   = #{warnRule.ruleName},
+            is_deleted  = #{warnRule.isDeleted}
+        WHERE id = #{warnRule.id}
+    </update>
+
+    <select id="selectWarnRule" parameterType="com.xiaomi.bms.entity.WarnRule" resultType="com.xiaomi.bms.entity.WarnRule">
+        SELECT wr.id, wr.rule_id, wr.battery_id, wr.lower_limit, wr.upper_limit, wr.warn_level, wr.rule_name, bat.battery_type
+        FROM warn_rule as wr
+        INNER JOIN battery as bat ON bat.id = wr.battery_id
+        <where>
+            <if test="warnRule.id != null and warnRule.id != ''">
+                AND wr.id LIKE CONCAT('%', #{warnRule.id}, '%')
+            </if>
+            <if test="warnRule.batteryId != null and warnRule.batteryId != ''">
+                AND wr.battery_id LIKE CONCAT('%', #{warnRule.batteryId}, '%')
+            </if>
+            AND wr.is_deleted = 0
+            AND bat.is_deleted = 0
+        </where>
+    </select>
+
+
+
+</mapper>

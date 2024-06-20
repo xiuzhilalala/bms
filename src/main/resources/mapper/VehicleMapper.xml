@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaomi.bms.mapper.VehicleMapper">
+  <resultMap id="BaseResultMap" type="com.xiaomi.bms.entity.Vehicle">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="vehicle_number" jdbcType="VARCHAR" property="vehicleNumber" />
+    <result column="battery_id" jdbcType="VARCHAR" property="batteryId" />
+    <result column="total_mileage_km" jdbcType="DECIMAL" property="totalMileageKm" />
+    <result column="battery_health_percentage" jdbcType="DECIMAL" property="batteryHealthPercentage" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, created_time, updated_time, vehicle_number, battery_id, total_mileage_km, battery_health_percentage, 
+    is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vehicle
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from vehicle
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xiaomi.bms.entity.Vehicle" useGeneratedKeys="true">
+    insert into vehicle (created_time, updated_time, vehicle_number,
+      battery_id, total_mileage_km, battery_health_percentage,
+      is_deleted)
+    values (#{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{vehicleNumber,jdbcType=VARCHAR},
+      #{batteryId,jdbcType=VARCHAR}, #{totalMileageKm,jdbcType=DECIMAL}, #{batteryHealthPercentage,jdbcType=DECIMAL},
+      #{isDeleted,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xiaomi.bms.entity.Vehicle" useGeneratedKeys="true">
+    insert into vehicle
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="vehicleNumber != null">
+        vehicle_number,
+      </if>
+      <if test="batteryId != null">
+        battery_id,
+      </if>
+      <if test="totalMileageKm != null">
+        total_mileage_km,
+      </if>
+      <if test="batteryHealthPercentage != null">
+        battery_health_percentage,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vehicleNumber != null">
+        #{vehicleNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="batteryId != null">
+        #{batteryId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMileageKm != null">
+        #{totalMileageKm,jdbcType=DECIMAL},
+      </if>
+      <if test="batteryHealthPercentage != null">
+        #{batteryHealthPercentage,jdbcType=DECIMAL},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaomi.bms.entity.Vehicle">
+    update vehicle
+    <set>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vehicleNumber != null">
+        vehicle_number = #{vehicleNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="batteryId != null">
+        battery_id = #{batteryId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMileageKm != null">
+        total_mileage_km = #{totalMileageKm,jdbcType=DECIMAL},
+      </if>
+      <if test="batteryHealthPercentage != null">
+        battery_health_percentage = #{batteryHealthPercentage,jdbcType=DECIMAL},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaomi.bms.entity.Vehicle">
+    update vehicle
+    set created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      vehicle_number = #{vehicleNumber,jdbcType=VARCHAR},
+      battery_id = #{batteryId,jdbcType=VARCHAR},
+      total_mileage_km = #{totalMileageKm,jdbcType=DECIMAL},
+      battery_health_percentage = #{batteryHealthPercentage,jdbcType=DECIMAL},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectAllByVehicleNumber" resultType="com.xiaomi.bms.entity.dto.VehicleWarnRuleDto">
+    select vehicle.vehicle_number as car_id,battery.id as battery_id,battery.battery_type
+    from vehicle as vehicle
+    inner join battery as battery on battery.id = vehicle.battery_id
+    where vehicle.vehicle_number in
+    <foreach collection="vehicleWarnDtoList" item="vehicleWarningDto" index="index" open="(" close=")" separator=",">
+      #{vehicleWarningDto.carId}
+    </foreach>
+  </select>
+  <select id="selectAllByVehicleNumberTest" resultType="com.xiaomi.bms.entity.dto.VehicleWarnRuleDto">
+      select battery_id,vehicle_number as car_id
+      from vehicle
+      where vehicle_number in
+      <foreach collection="vehicleWarnDtoList" item="vehicleWarningDto" index="index" open="(" close=")" separator=",">
+          #{vehicleWarningDto.carId}
+      </foreach>
+  </select>
+
+
+</mapper>
