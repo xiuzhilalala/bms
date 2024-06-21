@@ -17,8 +17,7 @@ import java.util.List;
 
 /**
  * WarnRule服务实现类
- * 处理WarnRule相关的业务逻辑
- *
+ * 处理电池预警规则相关的业务逻辑
  * @Author zhuzhe1018
  * @Date 2024/6/16
  */

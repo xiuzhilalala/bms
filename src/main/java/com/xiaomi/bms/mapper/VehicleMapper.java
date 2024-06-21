@@ -10,7 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author zhuzhe1018
+ * @date 2024/6/16
+ */
 @Repository
 public interface VehicleMapper extends BaseMapper<Vehicle> {
     int deleteByPrimaryKey(String id);

@@ -11,11 +11,8 @@ import com.xiaomi.bms.entity.vo.VehicleWarnVo;
 import java.util.List;
 
 /**
- * <p>
- * </p>
- *
  * @author zhuzhe1018
- * @date 2024/6/18 10:59
+ * @date 2024/6/16
  */
 public interface VehicleService  extends IService<Vehicle> {
 

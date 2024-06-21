@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xiaomi.bms.common.BaseResult;
+import com.xiaomi.bms.constant.RedisConstant;
 import com.xiaomi.bms.constant.ResultConstant;
 import com.xiaomi.bms.entity.Battery;
 import com.xiaomi.bms.entity.WarnRule;
@@ -31,7 +32,6 @@ import java.util.function.Function;
 
 /**
  * 该实现类主要是对关于车辆信息的相关操作，包括车辆电池信息的预警。
- *
  * @author zhuzhe1018
  * @date 2024/6/17
  */
@@ -47,7 +47,7 @@ public class VehicleServiceImpl extends ServiceImpl<VehicleMapper, Vehicle> impl
     private RedisUtil redisUtil;
     @Autowired
     private VehicleMapper vehicleMapper;
-    private final static Integer EXPIRE_TIME = 10;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -181,21 +181,13 @@ public class VehicleServiceImpl extends ServiceImpl<VehicleMapper, Vehicle> impl
                     List<WarnRule> rules = entry.getValue();
 //                    this.saveWarnRulesToRedis(batteryId,rules);
                     // 将数据存入Redis，设置过期时间
-                    redisUtil.setWithExpiration(batteryId, objectMapper.writeValueAsString(rules), EXPIRE_TIME, TimeUnit.MINUTES);
+                    redisUtil.setWithExpiration(batteryId, objectMapper.writeValueAsString(rules), RedisConstant.WARN_RULE_EXPIRE_TIME, RedisConstant.WARN_RULE_EXPIRE_UNIT);
                 }
                 //将数据库中存储的规则存入list
                 warnRuleList.addAll(warnRulesDataBaseList);
             }
         }
         return warnRuleList;
-    }
-
-    @Async("taskExecutor")
-    public void saveWarnRulesToRedis(String batteryId, List<WarnRule> rules) throws JsonProcessingException {
-        Thread thread = new Thread();
-        System.out.println(thread.getName());
-        String json = objectMapper.writeValueAsString(rules);
-        redisUtil.setWithExpiration(batteryId, json, EXPIRE_TIME, TimeUnit.SECONDS);
     }
 
     /**

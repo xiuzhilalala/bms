@@ -86,6 +86,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0</version>
         </dependency>
+<!--        canal-->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+            <version>1.0.12</version>
+        </dependency>
+
         <!--        &lt;!&ndash;        hibernate&ndash;&gt;-->
         <!--        <dependency>-->
         <!--            <groupId>org.hibernate</groupId>-->
