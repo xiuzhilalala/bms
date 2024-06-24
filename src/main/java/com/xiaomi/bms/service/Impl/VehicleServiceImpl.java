@@ -83,7 +83,7 @@ public class VehicleServiceImpl extends ServiceImpl<VehicleMapper, Vehicle> impl
 //        }
 //
         long startTime = System.currentTimeMillis();
-        List<VehicleWarnRuleDto> vehicleWarnRuleDtoList = vehicleMapper.selectAllByVehicleNumberTest(vehicleWarnDtoList);
+        List<VehicleWarnRuleDto> vehicleWarnRuleDtoList = vehicleMapper.selectAllByVehicleNumber(vehicleWarnDtoList);
         long endTime = System.currentTimeMillis();
         System.out.println("Time taken by selectAllByVehicleNumber: " + (endTime - startTime) + " ms");
         List<String> warnBatteryIds = vehicleWarnRuleDtoList.stream()

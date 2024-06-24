@@ -123,16 +123,16 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
+<!--  <select id="selectAllByVehicleNumber" resultType="com.xiaomi.bms.entity.dto.VehicleWarnRuleDto">-->
+<!--    select vehicle.vehicle_number as car_id,battery.id as battery_id,battery.battery_type-->
+<!--    from vehicle as vehicle-->
+<!--    inner join battery as battery on battery.id = vehicle.battery_id-->
+<!--    where vehicle.vehicle_number in-->
+<!--    <foreach collection="vehicleWarnDtoList" item="vehicleWarningDto" index="index" open="(" close=")" separator=",">-->
+<!--      #{vehicleWarningDto.carId}-->
+<!--    </foreach>-->
+<!--  </select>-->
   <select id="selectAllByVehicleNumber" resultType="com.xiaomi.bms.entity.dto.VehicleWarnRuleDto">
-    select vehicle.vehicle_number as car_id,battery.id as battery_id,battery.battery_type
-    from vehicle as vehicle
-    inner join battery as battery on battery.id = vehicle.battery_id
-    where vehicle.vehicle_number in
-    <foreach collection="vehicleWarnDtoList" item="vehicleWarningDto" index="index" open="(" close=")" separator=",">
-      #{vehicleWarningDto.carId}
-    </foreach>
-  </select>
-  <select id="selectAllByVehicleNumberTest" resultType="com.xiaomi.bms.entity.dto.VehicleWarnRuleDto">
       select battery_id,vehicle_number as car_id
       from vehicle
       where vehicle_number in

@@ -26,6 +26,6 @@ public interface VehicleMapper extends BaseMapper<Vehicle> {
 
     int updateByPrimaryKey(Vehicle record);
 
+//    List<VehicleWarnRuleDto> selectAllByVehicleNumber(@Param("vehicleWarnDtoList") List<VehicleWarnDto> vehicleWarnDtoList);
     List<VehicleWarnRuleDto> selectAllByVehicleNumber(@Param("vehicleWarnDtoList") List<VehicleWarnDto> vehicleWarnDtoList);
-    List<VehicleWarnRuleDto> selectAllByVehicleNumberTest(@Param("vehicleWarnDtoList") List<VehicleWarnDto> vehicleWarnDtoList);
 }
